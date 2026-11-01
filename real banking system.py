@@ -62,7 +62,7 @@ while True:
             break
     if run==0:
         print("Invalid account no")
-        break
+        continue
     print("Enter password of your account")
     password=(f"{get_input(4)}")
     if account_name.password==password:
