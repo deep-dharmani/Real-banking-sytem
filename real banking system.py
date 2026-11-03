@@ -1,3 +1,5 @@
+import json
+import os
 class Bank_account:
     def __init__(self,account,balance,password):
         self.account=account
@@ -6,6 +8,7 @@ class Bank_account:
     def Deposit(self,amount):
         if amount>0:
             self.__balance+=amount
+            save_accounts()
             msg_1=f"your balace becomes {self.__balance}"
             print(msg_1)
             return msg_1
@@ -16,6 +19,7 @@ class Bank_account:
     def withdraw(self,amount):
         if amount>0 and amount<=self.__balance:
             self.__balance-=amount
+            save_accounts()
             msg_3=f"Now your balance is{self.__balance}"
             print(msg_3)
             return msg_3
@@ -37,7 +41,25 @@ sohail=Bank_account('111111111113',0,"8832")
 kanwal=Bank_account('111111111114',0,"7764")
 bhawish=Bank_account('111111111115',0,"9965")
 accounts=[deep,mahveer,sohail,kanwal,bhawish]
-
+def save_accounts():
+    data=[]
+    for account in accounts:
+        data.append=({"account":account.account,"balance":_Bank_account_balance,"password":account.password})
+        with open(FILE_NAME, "w") as file:
+            json.dump(data,file,indent=4)
+def load_accounts():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as file:
+            try:
+                data = json.load(file)
+                for saved_account in data:
+                    for account in accounts:
+                        if account.account == saved_account["account"]:
+                            account._Bank_account__balance = saved_account["balance"]
+                            break
+            except json.JSONDecodeError:
+                print("Account file is empty or contains invalid data.")
+load_accounts()
 import msvcrt
 def get_input(length):
     text = ""
@@ -55,19 +77,19 @@ while True:
     run=0
     print("Enter account no")
     account_no=f"{get_input(12)}"
+    account_name=None
     for i in accounts:
         if i.account==account_no:
             account_name=i
-            run+=1
             break
-    if run==0:
+    if  account_name==None:
         print("Invalid account no")
         continue
     print("Enter password of your account")
     password=(f"{get_input(4)}")
     if account_name.password==password:
         print(f"Hello Sir \nEnter 1 for \
-Deposit amount\nEnter 2 for withdraw amount\nEnter 3 for checking your total balance")
+Deposit amount\nEnter 2 for withdraw amount\nEnter 3 for checking your total balance\nenter 4 to exit the programme")
         work=int(get_input(1))
         match work:
             case 1:
@@ -78,5 +100,10 @@ Deposit amount\nEnter 2 for withdraw amount\nEnter 3 for checking your total bal
                 account_name.withdraw(amount_value)
             case 3:
                 account_name.total_balance()
+            case 4:
+                print("Thanks for using our bank")
+                break
+            case _:
+                print("Invalid option")
     else:
         print("wrong password")
